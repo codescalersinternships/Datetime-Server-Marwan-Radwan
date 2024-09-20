@@ -10,6 +10,11 @@ format:
 linter:
 	golint ./...
 
-
 http_build:
 	go build ./pkg/timeHttp/server.go
+
+ginserver:
+	go run ./cmd/timeGin/main.go
+
+gin_build:
+	go build ./pkg/timeGin/server.go
