@@ -1,5 +1,14 @@
-httpserver:
+http server:
 	go run ./cmd/timeHttp/main.go
+
+build http:
+	go build ./cmd/timeHttp/main.go
+
+gin server:
+	go run ./cmd/timeGin/main.go
+
+build gin:
+	go build ./cmd/timeGin/server.go
 
 test:
 	go test -v -cover ./...
@@ -7,14 +16,5 @@ test:
 format:
 	go fmt ./...
 
-linter:
-	golint ./...
-
-http_build:
-	go build ./pkg/timeHttp/server.go
-
-ginserver:
-	go run ./cmd/timeGin/main.go
-
-gin_build:
-	go build ./pkg/timeGin/server.go
+lint:
+	golangci-lint run
