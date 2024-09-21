@@ -1,10 +1,13 @@
 package timehttp
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"time"
 )
+
+var server *http.Server
 
 // GetTimeHandler returns an HTTP handler function that responds with the current time formatted depending on accept header.
 func GetTimeHandler() http.HandlerFunc {
@@ -53,8 +56,22 @@ func getTimePlainHandler() http.HandlerFunc {
 
 // StartServer starts an HTTP server on the specified port.
 func StartServer(port string) error {
+	server := &http.Server{
+		Addr:         ":" + port,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
+	}
 
 	http.HandleFunc("/datetime", getTimeJsonHandler())
 
-	return http.ListenAndServe(":"+port, nil)
+	return server.ListenAndServe()
+}
+
+// ShutdownServer gracefully shuts down the HTTP server
+func ShutdownServer(ctx context.Context) error {
+	if server != nil {
+		return server.Shutdown(ctx)
+	}
+	return nil
 }
