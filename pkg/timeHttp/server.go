@@ -6,7 +6,23 @@ import (
 	"time"
 )
 
-// getTimeJsonHandler returns an HTTP handler function that responds with the current time in json format.
+// GetTimeHandler returns an HTTP handler function that responds with the current time formatted depending on accept header.
+func GetTimeHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet {
+			w.WriteHeader(http.StatusMethodNotAllowed)
+			return
+		}
+
+		acceptHeader := r.Header.Get("Accept")
+		if acceptHeader == "application/json" {
+			getTimeJsonHandler()(w, r)
+		} else {
+			getTimePlainHandler()(w, r)
+		}
+	}
+}
+
 func getTimeJsonHandler() http.HandlerFunc {
 	currentTime := time.Now().Format(time.RFC822)
 
@@ -22,7 +38,6 @@ func getTimeJsonHandler() http.HandlerFunc {
 	}
 }
 
-// getTimePlainHandler returns an HTTP handler function that responds with the current time in plain text.
 func getTimePlainHandler() http.HandlerFunc {
 	currentTime := time.Now().Format(time.RFC822)
 
@@ -36,10 +51,10 @@ func getTimePlainHandler() http.HandlerFunc {
 	}
 }
 
+// StartServer starts an HTTP server on the specified port.
 func StartServer(port string) error {
 
-	http.HandleFunc("/datetime/plain", getTimePlainHandler())
-	http.HandleFunc("/datetime/json", getTimeJsonHandler())
+	http.HandleFunc("/datetime", getTimeJsonHandler())
 
 	return http.ListenAndServe(":"+port, nil)
 }

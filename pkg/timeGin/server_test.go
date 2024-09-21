@@ -10,17 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func TestGetTimeJsonHandler(t *testing.T) {
-	// Gin context for testing
+func TestGetTimeHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	r := gin.Default()
 	r.HandleMethodNotAllowed = true
 
-	r.GET("/datetime/json", getTimeJsonHandler)
+	r.GET("/datetime", GetTimeHandler)
 
-	t.Run("Valid Request", func(t *testing.T) {
+	t.Run("Valid Request JSON", func(t *testing.T) {
 		expected := time.Now().Format(time.RFC822)
-		req := httptest.NewRequest(http.MethodGet, "/datetime/json", nil)
+		req := httptest.NewRequest(http.MethodGet, "/datetime", nil)
+		req.Header.Set("Accept", "application/json")
 		rr := httptest.NewRecorder()
 
 		r.ServeHTTP(rr, req)
@@ -45,30 +45,9 @@ func TestGetTimeJsonHandler(t *testing.T) {
 		}
 	})
 
-	t.Run("Invalid Method", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodPost, "/datetime/json", nil)
-		rr := httptest.NewRecorder()
-
-		r.ServeHTTP(rr, req)
-
-		if status := rr.Code; status != http.StatusMethodNotAllowed {
-			t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusMethodNotAllowed)
-		}
-
-	})
-}
-
-func TestGetTimePlainHandler(t *testing.T) {
-	// Gin context for testing
-	gin.SetMode(gin.TestMode)
-	r := gin.Default()
-	r.HandleMethodNotAllowed = true
-
-	r.GET("/datetime/plain", getTimePlainHandler)
-
-	t.Run("Valid Request", func(t *testing.T) {
+	t.Run("Valid Request Plain Text", func(t *testing.T) {
 		expected := time.Now().Format(time.RFC822)
-		req := httptest.NewRequest(http.MethodGet, "/datetime/plain", nil)
+		req := httptest.NewRequest(http.MethodGet, "/datetime", nil)
 		rr := httptest.NewRecorder()
 
 		r.ServeHTTP(rr, req)
@@ -85,7 +64,7 @@ func TestGetTimePlainHandler(t *testing.T) {
 	})
 
 	t.Run("Invalid Method", func(t *testing.T) {
-		req := httptest.NewRequest(http.MethodPost, "/datetime/plain", nil)
+		req := httptest.NewRequest(http.MethodPost, "/datetime", nil)
 		rr := httptest.NewRecorder()
 
 		r.ServeHTTP(rr, req)

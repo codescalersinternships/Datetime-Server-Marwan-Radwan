@@ -7,33 +7,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetTimeHandler returns an HTTP handler function that responds with the current time formatted depending on accept header.
+func GetTimeHandler(ctx *gin.Context) {
+	currentTime := time.Now().Format(time.RFC822)
+
+	acceptHeader := ctx.GetHeader("Accept")
+	if acceptHeader == "application/json" {
+		ctx.JSON(http.StatusOK, gin.H{
+			"DateTime": currentTime,
+		})
+		return
+	}
+
+	ctx.String(http.StatusOK, currentTime)
+}
+
+// StartServer initializes and returns a new Gin engine with predefined routes.
 func StartServer() *gin.Engine {
 	r := gin.Default()
 	r.HandleMethodNotAllowed = true
 
-	routes := r.Group("/datetime")
-	{
-		routes.GET("/json", getTimeJsonHandler)
-		routes.GET("/plain", getTimePlainHandler)
-	}
-	// r.GET("/datetime/json", getTimeJsonHandler)
+	r.GET("/datetime", GetTimeHandler)
 
 	return r
 
-}
-
-// getTimeJsonHandler returns an HTTP handler function that responds with the current time in json format.
-func getTimeJsonHandler(ctx *gin.Context) {
-	currentTime := time.Now().Format(time.RFC822)
-
-	ctx.JSON(http.StatusOK, gin.H{
-		"DateTime": currentTime,
-	})
-}
-
-// getTimePlainHandler returns an HTTP handler function that responds with the current time in plain text.
-func getTimePlainHandler(ctx *gin.Context) {
-	currentTime := time.Now().Format(time.RFC822)
-
-	ctx.String(http.StatusOK, currentTime)
 }
