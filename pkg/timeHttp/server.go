@@ -63,7 +63,7 @@ func StartServer(port string) error {
 		IdleTimeout:  15 * time.Second,
 	}
 
-	http.HandleFunc("/datetime", getTimeJsonHandler())
+	http.HandleFunc("/datetime", GetTimeHandler())
 
 	return server.ListenAndServe()
 }
