@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  http-server:
+    container_name: http-server
+    build:
+      context: .
+      dockerfile: Dockerfile-http
+    ports:
+      - "8080:8080"
+
+  gin-server:
+    container_name: gin-server
+    build:
+      context: .
+      dockerfile: Dockerfile-gin
+    ports:
+      - "8081:8081"

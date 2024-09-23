@@ -18,6 +18,12 @@ to build the Gin server
 make build gin
 ```
 
+Run using docker compose:
+
+```bash
+docker-compose -f docker-compose.yml up --build -d
+```
+
 Access the (net/http) server endpoint:
 
 ```
